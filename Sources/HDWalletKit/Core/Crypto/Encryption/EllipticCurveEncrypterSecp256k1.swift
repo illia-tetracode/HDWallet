@@ -28,7 +28,7 @@ public class EllipticCurveEncrypterSecp256k1 {
     ///   - privateKey: private key bytes
     /// - Returns: public key structure
     public func createPublicKey(privateKey: Data) -> secp256k1_pubkey {
-        let privateKey = privateKey.bytes
+        let privateKey = Array(privateKey)
         var publickKey = secp256k1_pubkey()
         _ = SecpResult(secp256k1_ec_pubkey_create(context, &publickKey, privateKey))
         return publickKey
@@ -95,7 +95,7 @@ public class EllipticCurveEncrypterSecp256k1 {
     /// - Returns: public key structure or nil, if signature invalid
     public func publicKey(signature: inout secp256k1_ecdsa_recoverable_signature, hash: Data) -> secp256k1_pubkey? {
         precondition(hash.count == 32, "Hash must be 32 bytes size")
-        let hash = hash.bytes
+        let hash = Array(hash)
         var outPubKey = secp256k1_pubkey()
         let status = SecpResult(secp256k1_ecdsa_recover(context, &outPubKey, &signature, hash))
         return status == .success ? outPubKey : nil
